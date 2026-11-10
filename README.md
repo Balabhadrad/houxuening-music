@@ -1,2 +1,4 @@
-# houxuening-music
-侯雪宁音乐作品集 — published static assets only
+# 侯雪宁 · 音乐作品集
+
+仅发布现有作品集网页、六段视频和封面。
+不包含个人报名表、证件附件、完整简历源文件或部署凭据。

@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "title": "钢琴舞台演奏",
+    "category": "钢琴",
+    "duration": 55.301667,
+    "url": "media/01.mp4",
+    "poster": "posters/01.jpg"
+  },
+  {
+    "id": 2,
+    "title": "声乐录制片段",
+    "category": "声乐",
+    "duration": 28.8,
+    "url": "media/02.mp4",
+    "poster": "posters/02.jpg"
+  },
+  {
+    "id": 3,
+    "title": "声乐展示片段",
+    "category": "声乐",
+    "duration": 36.01424,
+    "url": "media/03.mp4",
+    "poster": "posters/03.jpg"
+  },
+  {
+    "id": 4,
+    "title": "舞蹈舞台表演",
+    "category": "舞蹈",
+    "duration": 48.274399,
+    "url": "media/04.mp4",
+    "poster": "posters/04.jpg"
+  },
+  {
+    "id": 5,
+    "title": "古筝演奏片段",
+    "category": "器乐",
+    "duration": 35.828481,
+    "url": "media/05.mp4",
+    "poster": "posters/05.jpg"
+  },
+  {
+    "id": 6,
+    "title": "吉他弹唱片段",
+    "category": "器乐",
+    "duration": 16.416553,
+    "url": "media/06.mp4",
+    "poster": "posters/06.jpg"
+  }
+]
