@@ -85,7 +85,7 @@ function playbackNote(v,text){let note;if(v===hero){note=document.querySelector(
 function fallbackToOrigin(v){
  if(v.dataset.route==='origin')return;
  const resume=!v.paused||(v===hero&&heroVisible&&!previewPausedByUser&&!motionPreference.matches);
- const generation=playbackGeneration,position=v.currentTime;v.dataset.route='origin';v.src=v.dataset.localSource;v.load();
+ const generation=playbackGeneration,position=v.currentTime;v.dataset.route='origin';v.preload='auto';v.src=v.dataset.localSource;v.load();
  const link=v.closest('.card')?.querySelector('.open');if(link)link.href=v.dataset.localSource;
  playbackNote(v,'已切换备用线路');
  v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(v.duration)&&position<v.duration)v.currentTime=position;if(resume&&generation===playbackGeneration&&!document.hidden&&!v.closest('.card')?.hidden){if(v===hero)tryPreview();else v.play().catch(()=>{})}},{once:true});
@@ -94,7 +94,7 @@ videos.forEach(v=>{
  v.dataset.route=v.querySelector('source')?.getAttribute('src')?.startsWith('https:')?'cdn':'origin';
  let stallTimer;
  const stopTimer=()=>clearTimeout(stallTimer);
- const watch=()=>{stopTimer();if(v.dataset.route==='cdn'&&(!v.paused||v.autoplay))stallTimer=setTimeout(()=>fallbackToOrigin(v),8500)};
+ const watch=()=>{stopTimer();if(v.dataset.route==='cdn'&&(!v.paused||v.autoplay))stallTimer=setTimeout(()=>fallbackToOrigin(v),15000)};
  v.addEventListener('waiting',watch);v.addEventListener('loadstart',watch);v.addEventListener('stalled',watch);
  v.addEventListener('playing',stopTimer);v.addEventListener('pause',stopTimer);
  v.querySelector('source')?.addEventListener('error',()=>fallbackToOrigin(v));
