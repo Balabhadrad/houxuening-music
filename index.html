@@ -36,7 +36,7 @@ catch(e){document.documentElement.dataset.theme=matchMedia('(prefers-color-schem
 <main id="top"><section class="hero" aria-labelledby="hero-title">
 <div class="hero-kicker"><p class="eyebrow">音乐 · 舞台 · 表达</p><span class="edition">Selected works / 01 — 06</span></div>
 <div class="hero-heading"><h1 id="hero-title">以音乐，<em>传递热爱。</em></h1><div class="hero-intro"><p>侯雪宁 · 音乐教师<br>钢琴、声乐、舞蹈与器乐作品展示。<br>让每一种表达，都被认真听见。</p><a class="text-link" href="#works"><span>探索作品</span><span aria-hidden="true">↘</span></a></div></div>
-<figure class="hero-gallery"><div class="hero-stage"><video id="hero-video" muted loop playsinline webkit-playsinline preload="none" poster="posters/01.jpg" data-cdn-source="https://cdn.jsdmirror.cn/gh/Balabhadrad/houxuening-music@a9c6f48b5c35fbb4eb290cd5ad0241dae0425b9e/media/01.mp4" aria-label="钢琴舞台演奏自动预览"><source src="https://embed-ssl.wistia.com/deliveries/fd6a69a78e2a6055db7f2cd66fc0e91ed353a1d6.mp4" type="video/mp4"></video><div class="hero-caption"><span><strong>走近音乐现场</strong><small>A MOMENT ON STAGE</small></span><div class="preview-controls"><button class="preview-button" id="preview-pause" type="button" aria-label="播放舞台预览">▶</button><button class="preview-button" id="preview-sound" type="button" aria-label="开启预览声音" aria-pressed="false">开启声音</button></div></div></div><figcaption><span>钢琴舞台演奏 / 作品选辑 01</span><span>Music speaks where words leave off.</span></figcaption></figure>
+<figure class="hero-gallery"><div class="hero-stage"><video id="hero-video" muted loop playsinline webkit-playsinline preload="none" poster="posters/01.jpg" data-cdn-source="https://cdn.jsdmirror.cn/gh/Balabhadrad/houxuening-music@a9c6f48b5c35fbb4eb290cd5ad0241dae0425b9e/media/01.mp4" aria-label="钢琴舞台演奏自动预览"><source src="https://embed-ssl.wistia.com/deliveries/fd6a69a78e2a6055db7f2cd66fc0e91ed353a1d6.mp4" type="video/mp4"></video><div class="hero-caption"><span><strong>走近音乐现场</strong><small>A MOMENT ON STAGE</small></span><div class="preview-controls"><button class="preview-button" id="preview-pause" type="button" aria-label="播放舞台预览">▶</button></div></div></div><figcaption><span>钢琴舞台演奏 / 作品选辑 01</span><span>Music speaks where words leave off.</span></figcaption></figure>
 <div class="disciplines" aria-label="专业展示领域"><div class="discipline"><b>01</b><strong>钢琴</strong><small>PIANO</small></div><div class="discipline"><b>02</b><strong>声乐</strong><small>VOCAL</small></div><div class="discipline"><b>03</b><strong>舞蹈</strong><small>DANCE</small></div><div class="discipline"><b>04</b><strong>器乐</strong><small>INSTRUMENTS</small></div></div>
 </section><section class="works" id="works" aria-labelledby="work-title">
 <div class="section-top"><div><p class="section-kicker">THE SELECTED COLLECTION</p><h2 class="section-heading" id="work-title">作品选辑<sup>06</sup></h2></div><p class="section-note">六个片段，不同的表达。<br>点击播放，听见完整现场。</p></div>
@@ -60,21 +60,17 @@ const themeButton=document.querySelector('#theme-toggle');
 function applyTheme(t){document.documentElement.dataset.theme=t;themeButton.setAttribute('aria-pressed',String(t==='dark'));themeButton.setAttribute('aria-label',t==='dark'?'切换为日间模式':'切换为夜间模式');document.querySelector('meta[name=theme-color]').content=t==='dark'?'#181b19':'#f3efe7'}
 applyTheme(document.documentElement.dataset.theme);
 themeButton.addEventListener('click',()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(t);try{localStorage.setItem('music-theme',t)}catch(e){}});
-const videos=[...document.querySelectorAll('video')],hero=document.querySelector('#hero-video'),pauseButton=document.querySelector('#preview-pause'),soundButton=document.querySelector('#preview-sound');
+const videos=[...document.querySelectorAll('video')],hero=document.querySelector('#hero-video'),pauseButton=document.querySelector('#preview-pause');
 const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
-const observesHero='IntersectionObserver' in window;
-let heroVisible=!observesHero,previewPausedByUser=false,previewInteracted=false;
+let previewPausedByUser=false,previewInteracted=false;
 function syncPreview(){
  const canPause=previewInteracted&&!hero.paused;
  pauseButton.textContent=canPause?'Ⅱ':'▶';
  pauseButton.setAttribute('aria-label',!previewInteracted?'播放舞台预览并开启声音':canPause?'暂停舞台预览':'播放舞台预览');
- soundButton.textContent=hero.muted?'开启声音':'静音';
- soundButton.setAttribute('aria-label',hero.muted?'开启预览声音':'关闭预览声音');
- soundButton.setAttribute('aria-pressed',String(!hero.muted));
 }
 function playVideo(v){v.play().catch(()=>{if(v===hero)syncPreview()})}
 function tryPreview(){
- if(!heroVisible||previewPausedByUser||!hero.muted||!hero.paused||document.hidden||motionPreference.matches||videos.some(v=>v!==hero&&!v.paused))return;
+ if(previewPausedByUser||!hero.muted||!hero.paused||document.hidden||motionPreference.matches||videos.some(v=>v!==hero&&!v.paused))return;
  playVideo(hero);
 }
 function startPreview(){previewPausedByUser=false;playVideo(hero);syncPreview()}
@@ -83,7 +79,6 @@ pauseButton.addEventListener('click',()=>{
  else if(hero.paused)startPreview();
  else{previewPausedByUser=true;hero.pause();syncPreview()}
 });
-soundButton.addEventListener('click',()=>{previewInteracted=true;hero.muted=!hero.muted;if(hero.paused)startPreview();else syncPreview()});
 hero.addEventListener('volumechange',syncPreview);
 
 videos.forEach(v=>{
@@ -91,7 +86,7 @@ videos.forEach(v=>{
  let source=v.querySelector('source'),timer,failed=false,note;
  v.dataset.route='wistia';
  const clearTimer=()=>{clearTimeout(timer);timer=undefined};
- const canContinue=()=>!v.paused&&!v.ended&&!document.hidden&&!(card?.hidden)&&(v!==hero||heroVisible);
+ const canContinue=()=>!v.paused&&!v.ended&&!document.hidden&&!(card?.hidden);
  function showError(){
   failed=true;
   v.pause();
@@ -135,10 +130,6 @@ videos.forEach(v=>{
  v.addEventListener('ended',clearTimer);
 });
 
-if(observesHero){new IntersectionObserver(entries=>{
- const entry=entries[0];heroVisible=entry.isIntersecting&&entry.intersectionRatio>=.15;
- if(heroVisible)tryPreview();else hero.pause();
-},{threshold:.15}).observe(hero)}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){videos.forEach(v=>v.pause())}else tryPreview()});
 tryPreview();syncPreview();
 const revealElements=[...document.querySelectorAll('.hero-heading,.hero-gallery,.disciplines,.section-top,.card,.about')];
