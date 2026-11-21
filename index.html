@@ -55,12 +55,13 @@ catch(e){document.documentElement.dataset.theme=matchMedia('(prefers-color-schem
 <section class="about" id="about" aria-labelledby="about-title"><div><p class="section-kicker">ABOUT THE COLLECTION</p><h2 id="about-title">在舞台上表达，<br>在音乐中相遇。</h2></div><div class="about-copy"><p>这里收录了侯雪宁的钢琴、声乐、舞蹈与器乐作品。六个片段，记录不同形式的音乐表达，也呈现一位音乐教师对舞台与专业的热爱。</p><p>本作品集用于求职与专业能力展示。</p><div class="signature">Hou Xuening</div></div></section></main>
 <footer><span class="footer-brand">侯雪宁 · 音乐作品集</span><span class="footer-note">MUSIC, STAGE &amp; EXPRESSION</span><a class="back-top" href="#top" aria-label="返回顶部">↑</a></footer>
 </div>
-<script src="hls-light-1.7.4.js"></script>
+<script type="application/json" id="hls-library">{"cdn": "https://cdn.jsdmirror.cn/gh/Balabhadrad/houxuening-music@a1a81e3399e5d3bd33e028f503cf6db254c2e9cd/hls-light-1.7.4.js", "local": "hls-light-1.7.4.js", "integrity": "sha384-Fm6UUdX7ww4Wtt6K70h7LPWCRsE6xPw0RjGCr8G3Q6REhT90GXVBBMhMKKiU489m"}</script>
 <script>
 const themeButton=document.querySelector('#theme-toggle');
 function applyTheme(t){document.documentElement.dataset.theme=t;themeButton.setAttribute('aria-pressed',String(t==='dark'));themeButton.setAttribute('aria-label',t==='dark'?'切换为日间模式':'切换为夜间模式');document.querySelector('meta[name=theme-color]').content=t==='dark'?'#181b19':'#f3efe7'}
 applyTheme(document.documentElement.dataset.theme);
 themeButton.addEventListener('click',()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(t);try{localStorage.setItem('music-theme',t)}catch(e){}});
+function initPlayback(){
 const videos=[...document.querySelectorAll('video')],hero=document.querySelector('#hero-video'),pauseButton=document.querySelector('#preview-pause');
 const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
 let previewPausedByUser=false,previewInteracted=false;
@@ -164,6 +165,24 @@ if('IntersectionObserver' in window&&!motionPreference.matches){
 }
 motionPreference.addEventListener?.('change',event=>{if(event.matches){document.documentElement.classList.remove('motion-ready');if(!previewInteracted)hero.pause()}else tryPreview()});
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{let n=0;document.querySelectorAll('.filter').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.querySelectorAll('.card').forEach(c=>{c.hidden=b.dataset.filter!=='全部'&&c.dataset.category!==b.dataset.filter;if(!c.hidden)n++;else c.querySelector('video').pause()});document.querySelector('#count').textContent=String(n).padStart(2,'0');document.querySelector('.grid').dataset.filtered=String(b.dataset.filter!=='全部')}));
+}
+const library=document.querySelector('#hls-library');
+if(!library)initPlayback();
+else void (async()=>{
+ const {cdn,local,integrity}=JSON.parse(library.textContent);
+ function load(url,ms){return new Promise(resolve=>{
+  const script=document.createElement('script');
+  const finish=ok=>{clearTimeout(timer);script.onload=script.onerror=null;script.remove();resolve(ok)};
+  const timer=setTimeout(()=>finish(false),ms);
+  script.src=url;script.integrity=integrity;script.crossOrigin='anonymous';
+  script.onload=()=>finish(Boolean(window.Hls));script.onerror=()=>finish(false);
+  document.head.append(script);
+ })}
+ const nativeApple=/AppleWebKit/.test(navigator.userAgent)&&!/Chrome|Chromium|Android|Edg/.test(navigator.userAgent)&&
+  document.querySelector('#hero-video').canPlayType('application/vnd.apple.mpegurl');
+ if(!nativeApple&&!(await load(cdn,3500)))await load(local,4500);
+ initPlayback();
+})();
 </script>
 </body>
 </html>
